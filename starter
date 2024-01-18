@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -e
+nginx -t
+nginx -g 'daemon off;' &
+nginx_pid=$!
+function checkIsUpToDate() {
+	git fetch
+	git rev-list HEAD...origin/master --count | grep -q "^0$" && {
+		return 0
+	}
+	return 1
+}
+
+function update() {
+	git reset --hard
+	git pull
+	make
+	mv /var/www/html /var/www/html-delme
+	mv dist/ /var/www/html
+	rm -rf /var/www/html-delme &
+	git reset --hard
+}
+
+cd /repo
+update
+(
+	while true; do
+		sleep 15
+		checkIsUpToDate && continue
+		update
+	done
+
+) &
+
+wait "$nginx_pid"
