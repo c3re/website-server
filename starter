@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 set -e
+
 nginx -t
 nginx -g 'daemon off;' &
 nginx_pid=$!
+
+trap 'kill "$nginx_pid"' EXIT
+trap 'kill "$nginx_pid"' SIGTERM
+
 function checkIsUpToDate() {
 	git fetch
 	git rev-list HEAD...origin/master --count | grep -q "^0$" && {
@@ -30,6 +35,14 @@ update
 		update
 	done
 
+) &
+
+(
+	while true; do
+		sleep 1h
+		update
+
+	done
 ) &
 
 wait "$nginx_pid"
