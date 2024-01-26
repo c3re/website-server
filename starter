@@ -21,7 +21,7 @@ function update() {
 	git pull
 	make
 	mv /var/www/html /var/www/html-delme
-	mv dist/ /var/www/html
+	mv public/ /var/www/html
 	rm -rf /var/www/html-delme &
 	git reset --hard
 }
