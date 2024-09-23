@@ -5,8 +5,6 @@ RUN apt-get install -y git hugo nginx build-essential unar wget
 RUN rm -rf /var/www/html
 RUN mkdir -p /var/www/html
 
-ENV GIT_URL=https://git.c3re.de/c3re/c3re-website.git
-
 WORKDIR /tmp
 RUN wget https://github.com/tdewolff/minify/releases/download/v2.20.16/minify_linux_amd64.tar.gz
 RUN unar minify*tar.gz
