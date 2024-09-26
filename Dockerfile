@@ -17,5 +17,4 @@ ADD starter /usr/local/bin/
 EXPOSE 80
 WORKDIR /repo
 
-RUN git clone "$GIT_URL" .
 CMD /usr/local/bin/starter
