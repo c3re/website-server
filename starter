@@ -33,6 +33,9 @@ function init() {
 	git clone "$GIT_URL" .
 }
 
+cd /
+rm -rf /repo
+mkdir /repo
 cd /repo
 
 init
