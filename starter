@@ -51,8 +51,13 @@ update
 
 (
 	while true; do
-		sleep 1h
+		echo "$( (
+			echo -n "60 - "
+			date +%M
+		) | bc)m" # sleep til the next full hour
+		echo "Running hourly update"
 		update
+		sleep 65 # to prevent rerunning in the same minute
 
 	done
 ) &
