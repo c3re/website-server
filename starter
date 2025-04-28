@@ -1,13 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-nginx -t
-nginx -g 'daemon off;' &
-nginx_pid=$!
-
-trap 'kill "$nginx_pid"' EXIT
-trap 'kill "$nginx_pid"' SIGTERM
-
 function checkIsUpToDate() {
 	git fetch
 	git rev-list HEAD...origin/master --count | grep -q "^0$" && {
@@ -25,6 +18,7 @@ function update() {
 	rm -rf /var/www/html-delme &
 	git reset --hard
 }
+
 function init() {
 	test -z "$GIT_URL" && {
 		echo "GIT_URL is not set"
@@ -32,6 +26,16 @@ function init() {
 	}
 	git clone "$GIT_URL" .
 }
+
+
+nginx -t
+nginx -g 'daemon off;' &
+nginx_pid=$!
+
+trap 'kill "$nginx_pid"' EXIT
+trap 'kill "$nginx_pid"' SIGTERM
+
+
 
 cd /
 rm -rf /repo
@@ -51,10 +55,10 @@ update
 
 (
 	while true; do
-		echo "$( (
+		sleep "$( (
 			echo -n "60 - "
 			date +%M
-		) | bc)m" # sleep til the next full hour
+		) | bc)m" # sleep till the next full hour
 		echo "Running hourly update"
 		update
 		sleep 65 # to prevent rerunning in the same minute
